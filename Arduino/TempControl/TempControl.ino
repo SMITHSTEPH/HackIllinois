@@ -4,6 +4,11 @@
 char* ssid = "U of Iowa Hawkeyes"; // the name of your network
 char* password = "zdilarlinksys";  // your network password
 int status = WL_IDLE_STATUS; //network status
+
+unsigned int localPort = 2390;      // local port to listen on
+char packetBuffer[255]; //buffer to hold incoming packet
+char  ReplyBuffer[] = "acknowledged";       // a string to send back
+
 const short tempPin=0, peltierPin=3; //analog pin A0 for lm35dz & //The N-Channel MOSFET is on digital pin 3
 short temperature=0, prevTemp=0, peltierPower=0;
 
@@ -44,4 +49,23 @@ short readTempSensor()
   short temperature = analogRead(tempPin); //casting input to integer
   temperature = temperature * 0.48828125;
   return temperature;
+}
+/**
+ * Displaying the wifi status for testing purposes
+ */
+void printWifiStatus() {
+  // print the SSID of the network you're attached to:
+  Serial.print("SSID: ");
+  Serial.println(WiFi.SSID());
+
+  // print your WiFi shield's IP address:
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
+
+  // print the received signal strength:
+  long rssi = WiFi.RSSI();
+  Serial.print("signal strength (RSSI):");
+  Serial.print(rssi);
+  Serial.println(" dBm");
 }

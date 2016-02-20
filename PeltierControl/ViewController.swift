@@ -9,8 +9,13 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet weak var peltierTemo: UILabel!
+    @IBOutlet weak var outsideTemp: UILabel!
+    @IBOutlet weak var tempOverride: UISwitch!
 
+    @IBOutlet weak var overrideBox: UITextField!
 
+    @IBOutlet weak var overrideSlider: UISlider!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.

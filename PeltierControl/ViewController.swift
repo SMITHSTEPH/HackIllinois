@@ -9,6 +9,9 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet weak var autoSwitch: UISwitch!
+    @IBOutlet weak var sliderLabel: UILabel!
+    @IBOutlet weak var sliderControl: UISlider!
 
     override func viewDidLoad() {
         super.viewDidLoad()

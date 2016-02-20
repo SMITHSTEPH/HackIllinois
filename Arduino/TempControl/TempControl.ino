@@ -1,40 +1,46 @@
+/*wifi*/
 #include <SPI.h>
 #include <WiFi.h>
-
 char* ssid = "U of Iowa Hawkeyes"; // the name of your network
 char* password = "zdilarlinksys";  // your network password
 int status = WL_IDLE_STATUS; //network status
-
-unsigned int localPort = 2390;      // local port to listen on
-char packetBuffer[255]; //buffer to hold incoming packet
-char  ReplyBuffer[] = "acknowledged";       // a string to send back
-
-const short tempPin=0, peltierPin=3; //analog pin A0 for lm35dz & //The N-Channel MOSFET is on digital pin 3
-short temperature=0, prevTemp=0, peltierPower=0;
+WiFiClient client;
+/*These values will be subject to change*/
+IPAddress serverAddr(192,168,1,102); //stephanie's ip address
+unsigned int serverPort = 1025; //port that server is listening on
+const short MAX_BUF=50;
+char messageBuffer[MAX_BUF]; //largest message should be 50 bytes
+/*pin config*/
+const short airTempPin=0, peltierPin=3, peltierTempPin=1; //analog pin A0 for lm35dz & //The N-Channel MOSFET is on digital pin 3
+short airTemperature=0, airPrevTemp=0, peltierTemperature=0, prevPeltierTemperature=0, peltierPower=0;
 
 //int peltier_level = map(peltierPower, 0, 99, 0, 255); //do I need it?
 //This is a value from 0 to 255 that actually controls the MOSFET
 void setup() 
 {
-  pinMode(tempPin, INPUT);
+  pinMode(airTempPin, INPUT);
   pinMode(peltierPin, OUTPUT);
   Serial.begin(9600); //for testing
+  /*wifi*/
   status = WiFi.begin(ssid, password);
-  if ( status != WL_CONNECTED) { Serial.println("Arduino couldn't get a wifi connection");} 
+  if ( status != WL_CONNECTED) { Serial.println("Arduino couldn't get a wifi connection");} //connect to server
   else {Serial.print("Arduino is connected to the network");}
+  //if(client.connect(serverAddr, serverPort)){Serial.println("Arduino connected to server");}
+  //else{Serial.println("Arduino could not connect to server");}
 }
 
 void loop() 
 {
-  temperature=readTempSensor(); //read the air temp data from the lm35dz temp sensor
-  if(temperature!=prevTemp) //send air temp data to smart phone
+  airTemperature=readTempSensor(); //read the air temp data from the lm35dz temp sensor
+  if(airTemperature!=airPrevTemp) //send air temp data to smart phone
   {
-    Serial.println(temperature); //change this to a wifi command
-    prevTemp=temperature;
+    sendDataToServer("air-"+String(airTemperature));
+    airPrevTemp=airTemperature;
   }
+  readDataFromServer();
   /*test print statments*/
-  Serial.print(temperature); 
-  Serial.println("* C");
+  //Serial.print(temperature); 
+  //Serial.println("* C");
 }
 /**
  * This function reads in the analog input and converts this input
@@ -46,14 +52,55 @@ void loop()
  //LM35DZ
 short readTempSensor()
 {
-  short temperature = analogRead(tempPin); //casting input to integer
+  short temperature = analogRead(airTempPin); //casting input to integer
   temperature = temperature * 0.48828125;
   return temperature;
 }
 /**
+ * Send data to the server
+ */
+bool sendDataToServer(String data)
+{
+  client.println(data);
+  return true;
+}
+/**
+ * Reads data from the server
+ */
+bool readDataFromServer()
+{
+  /*short i=0;
+  while (client.available() && i < MAX_BUF )
+  {
+    char c = client.read();
+    messageBuffer[i]=c;
+    i++;
+  }
+  //if the server's disconnected, stop the client:
+  if (!client.connected())
+  {
+    disconnectFromServer();
+    return false;
+  }
+  Serial.print("Arduino received from server: ");
+  Serial.println(messageBuffer);
+  return true;*/
+}
+/**
+ * disconnect from server
+ */
+bool disconnectFromServer()
+{
+   Serial.println();
+   Serial.println("Arduino is disconnecting from server.");
+   client.stop();
+   return true;
+}
+/**
  * Displaying the wifi status for testing purposes
  */
-void printWifiStatus() {
+void printWifiStatus() 
+{
   // print the SSID of the network you're attached to:
   Serial.print("SSID: ");
   Serial.println(WiFi.SSID());

@@ -6,8 +6,9 @@ char* password = "zdilarlinksys";  // your network password
 int status = WL_IDLE_STATUS; //network status
 WiFiClient client;
 /*These values will be subject to change*/
-IPAddress serverAddr(192,168,1,102); //stephanie's ip address
-unsigned int serverPort = 1025; //port that server is listening on
+//IPAddress serverAddr(192,168,1,102); //stephanie's ip address
+IPAddress serverAddr(192,168,1,105);  // Google
+unsigned int serverPort = 80; //port that server is listening on
 const short MAX_BUF=50;
 char messageBuffer[MAX_BUF]; //largest message should be 50 bytes
 /*pin config*/
@@ -22,22 +23,27 @@ void setup()
   pinMode(peltierPin, OUTPUT);
   Serial.begin(9600); //for testing
   /*wifi*/
+  
   status = WiFi.begin(ssid, password);
   if ( status != WL_CONNECTED) { Serial.println("Arduino couldn't get a wifi connection");} //connect to server
-  else {Serial.print("Arduino is connected to the network");}
-  //if(client.connect(serverAddr, serverPort)){Serial.println("Arduino connected to server");}
+  else {Serial.println("Arduino is connected to the network");}
+  int response = client.connect(serverAddr,serverPort);
+  Serial.println(response);
   //else{Serial.println("Arduino could not connect to server");}
+  printWifiStatus();
 }
 
 void loop() 
 {
-  airTemperature=readTempSensor(); //read the air temp data from the lm35dz temp sensor
+  //sendDataToServer("air-" + String(10));
+  /*airTemperature=readTempSensor(); //read the air temp data from the lm35dz temp sensor
   if(airTemperature!=airPrevTemp) //send air temp data to smart phone
   {
     sendDataToServer("air-"+String(airTemperature));
     airPrevTemp=airTemperature;
   }
-  readDataFromServer();
+  readDataFromServer();*/
+  //readDataFromServer();
   /*test print statments*/
   //Serial.print(temperature); 
   //Serial.println("* C");
@@ -69,7 +75,7 @@ bool sendDataToServer(String data)
  */
 bool readDataFromServer()
 {
-  /*short i=0;
+  short i=0;
   while (client.available() && i < MAX_BUF )
   {
     char c = client.read();
@@ -84,7 +90,7 @@ bool readDataFromServer()
   }
   Serial.print("Arduino received from server: ");
   Serial.println(messageBuffer);
-  return true;*/
+  return true;
 }
 /**
  * disconnect from server

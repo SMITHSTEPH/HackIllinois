@@ -37,7 +37,10 @@ int main(int argc, char *argv[]) {
   int echoStringLen = strlen(echoString);   // Determine input length
   unsigned short echoServPort = (argc == 4) ? atoi(argv[3]) : 7;
 
-  try {
+ try {
+     cout<<"ip: "<<servAddress<<endl;
+     cout<<"port: "<<echoServPort<<endl;
+     cout<<"message: "<<echoString<<endl;
     // Establish connection with the echo server
     TCPSocket sock(servAddress, echoServPort);
   
@@ -48,18 +51,22 @@ int main(int argc, char *argv[]) {
     int bytesReceived = 0;              // Bytes read on each recv()
     int totalBytesReceived = 0;         // Total bytes read
     // Receive the same string back from the server
-    cout << "Received: ";               // Setup to print the echoed string
-    while (totalBytesReceived < echoStringLen) {
-      // Receive up to the buffer size bytes from the sender
-      if ((bytesReceived = (sock.recv(echoBuffer, RCVBUFSIZE))) <= 0) {
-        cerr << "Unable to read";
-        exit(1);
-      }
-      totalBytesReceived += bytesReceived;     // Keep tally of total bytes
-      echoBuffer[bytesReceived] = '\0';        // Terminate the string!
-      cout << echoBuffer;                      // Print the echo buffer
-    }
-    cout << endl;
+    cout << "Received: ";
+     /*for(int i=0; i<2; i++)  // Setup to print the echoed string
+     {*/
+         while (totalBytesReceived < echoStringLen) {
+             // Receive up to the buffer size bytes from the sender
+             if ((bytesReceived = (sock.recv(echoBuffer, RCVBUFSIZE))) <= 0) {
+                 cerr << "Unable to read";
+                 exit(1);
+            }
+             totalBytesReceived += bytesReceived;     // Keep tally of total bytes
+             echoBuffer[bytesReceived] = '\0';        // Terminate the string!
+             cout << echoBuffer;
+             memset(echoBuffer, 0, RCVBUFSIZE);// Print the echo buffer
+         }
+         cout << endl;
+    // }
 
     // Destructor closes the socket
 

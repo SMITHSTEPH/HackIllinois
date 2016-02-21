@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Ice Cubed</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="peltier_temp_title">Current Peltier Temp. (˚F)</string>
+    <string name="outside_temp_title">Current Outside Temp. (˚F)</string>
+    <string name="manual_override_temp">Manual Override Temp. </string>
+
+</resources>

@@ -10,7 +10,7 @@ short temperature=0, prevTemp=0;
 
 char ssid[] = "U of Iowa Hawkeyes";
 char pass[] = "zdilarlinksys";
-int status = WL_IDLE_STATUS;
+//int status = WL_IDLE_STATUS;
 WiFiServer server(23);
 
 void setup(){
@@ -58,7 +58,7 @@ void loop(){
   
   analogWrite(peltier, peltier_level); //Write this new value out to the port
 
-}
+}gy
 
 short readTempSensor()
 {
@@ -69,5 +69,5 @@ short readTempSensor()
   
   // Calibration
   temperature -= 8;
-  return ((short) temperature);
+  return ((short) temperature);b 
 }
